@@ -9,6 +9,7 @@
 ## 📋 Table of Contents
 - [Overview](#-overview)
 - [Project Structure](#-project-structure)
+- [Project Files & Folders](#-project-files--folders)
 - [Architecture](#-architecture)
 - [Features](#-features)
 - [Local Development & Deployment](#-local-development--deployment)
@@ -17,7 +18,7 @@
 - [Pipeline Details](#-pipeline-details)
 - [Monitoring & Results](#-monitoring--results)
 - [Tech Stack](#-tech-stack)
-- [Project Files & Folders](#-project-files--folders)
+-
 
 ## 🎯 Overview
 
@@ -42,6 +43,107 @@ The project is organized into two main deployment paths:
 - AWS RDS for PostgreSQL database
 - Remote database access configuration
 - Cloud-based monitoring and management
+
+## 📁 Project Files & Folders
+
+### Root Directory Files
+- **docker-compose.yaml**: Orchestrates multi-container Docker application
+  ```yaml
+  # Key components:
+  - airflow-webserver
+  - postgres
+  # Defines networking & volume configurations
+  ```
+- **Dockerfile**: Customizes Airflow image with required dependencies
+- **requirements.txt**: Lists Python dependencies for the project
+- **packages.txt**: Defines system-level package requirements
+- **.gitignore**: Specifies Git-ignored files
+- **.dockerignore**: Lists files excluded from Docker context
+
+### /dags Directory
+Contains the core data pipeline implementation:
+```
+/dags
+├── etlpipeline.py    # Main DAG implementation
+└── .airflowignore    # Airflow file exclusion rules
+```
+
+The `etlpipeline.py` implements the ETL workflow:
+```python
+# Key components:
+def create_table():
+    # Creates PostgreSQL table schema
+    # Handles both local and cloud database setup
+
+def extract_apod():
+    # Connects to NASA APOD API
+    # Fetches daily astronomical picture and data
+
+def transform_data():
+    # Processes API response
+    # Extracts relevant fields and formats data
+
+def load_data_to_postgres():
+    # Stores processed data in PostgreSQL
+    # Handles both local and cloud database connections
+```
+
+### /tests Directory
+Contains test suites for DAG validation:
+```
+/tests
+└── /dags
+    └── test_dag_example.py    # DAG unit tests
+```
+
+Testing coverage includes:
+- DAG structure validation
+- Task dependency checks
+- Default argument verification
+- Schedule interval testing
+
+### /_asserts Directory
+Project documentation assets:
+- System architecture diagrams
+- Setup and configuration screenshots
+- Deployment process documentation
+- Database schema and connection images
+- Results and monitoring screenshots
+
+### Database Schema
+The PostgreSQL table structure used in both local and cloud deployments:
+```sql
+CREATE TABLE nasa_data (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255),        # Title of the astronomical image
+    explanation TEXT,          # Detailed description
+    url TEXT,                 # URL to the image
+    date DATE,               # Publication date
+    media_type VARCHAR(255)  # Type of media (image/video)
+);
+```
+
+### Configuration Details
+
+#### Local Development
+- Docker Compose manages:
+  - Airflow webserver and scheduler
+  - Local PostgreSQL instance
+  - Network connectivity between services
+  - Volume persistence for data
+
+#### Cloud Deployment
+- Astronomer CLI configuration for Airflow deployment
+- AWS RDS PostgreSQL setup
+  - Public access configuration
+  - Security group rules
+  - Connection endpoint management
+
+### Implementation Notes
+- The DAG runs daily to fetch new astronomical images
+- Error handling for API and database operations
+- Configurable parameters for both deployment modes
+- Logging and monitoring integration
 
 ## 🏗 Architecture
 
@@ -237,106 +339,7 @@ The cloud deployment leverages Astronomer Cloud and AWS RDS:
 - **AWS RDS**: Cloud database
 - **DBeaver**: Database management
 
-## 📁 Project Files & Folders
 
-### Root Directory Files
-- **docker-compose.yaml**: Orchestrates multi-container Docker application
-  ```yaml
-  # Key components:
-  - airflow-webserver
-  - postgres
-  # Defines networking & volume configurations
-  ```
-- **Dockerfile**: Customizes Airflow image with required dependencies
-- **requirements.txt**: Lists Python dependencies for the project
-- **packages.txt**: Defines system-level package requirements
-- **.gitignore**: Specifies Git-ignored files
-- **.dockerignore**: Lists files excluded from Docker context
-
-### /dags Directory
-Contains the core data pipeline implementation:
-```
-/dags
-├── etlpipeline.py    # Main DAG implementation
-└── .airflowignore    # Airflow file exclusion rules
-```
-
-The `etlpipeline.py` implements the ETL workflow:
-```python
-# Key components:
-def create_table():
-    # Creates PostgreSQL table schema
-    # Handles both local and cloud database setup
-
-def extract_apod():
-    # Connects to NASA APOD API
-    # Fetches daily astronomical picture and data
-
-def transform_data():
-    # Processes API response
-    # Extracts relevant fields and formats data
-
-def load_data_to_postgres():
-    # Stores processed data in PostgreSQL
-    # Handles both local and cloud database connections
-```
-
-### /tests Directory
-Contains test suites for DAG validation:
-```
-/tests
-└── /dags
-    └── test_dag_example.py    # DAG unit tests
-```
-
-Testing coverage includes:
-- DAG structure validation
-- Task dependency checks
-- Default argument verification
-- Schedule interval testing
-
-### /_asserts Directory
-Project documentation assets:
-- System architecture diagrams
-- Setup and configuration screenshots
-- Deployment process documentation
-- Database schema and connection images
-- Results and monitoring screenshots
-
-### Database Schema
-The PostgreSQL table structure used in both local and cloud deployments:
-```sql
-CREATE TABLE nasa_data (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255),        # Title of the astronomical image
-    explanation TEXT,          # Detailed description
-    url TEXT,                 # URL to the image
-    date DATE,               # Publication date
-    media_type VARCHAR(255)  # Type of media (image/video)
-);
-```
-
-### Configuration Details
-
-#### Local Development
-- Docker Compose manages:
-  - Airflow webserver and scheduler
-  - Local PostgreSQL instance
-  - Network connectivity between services
-  - Volume persistence for data
-
-#### Cloud Deployment
-- Astronomer CLI configuration for Airflow deployment
-- AWS RDS PostgreSQL setup
-  - Public access configuration
-  - Security group rules
-  - Connection endpoint management
-
-### Implementation Notes
-- The DAG runs daily to fetch new astronomical images
-- Error handling for API and database operations
-- Configurable parameters for both deployment modes
-- Logging and monitoring integration
 - Data persistence and backup considerations
 
 <div align="center">
