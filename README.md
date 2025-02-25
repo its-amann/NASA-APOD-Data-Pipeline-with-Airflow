@@ -1,4 +1,4 @@
-# 🚀 NASA APOD Data Pipeline
+# 🚀 NASA APOD Data Pipeline 
 
 <div align="center">
   <img src="_asserts/architecture of the Data Pipeline.png" alt="Architecture Diagram" width="800"/>
